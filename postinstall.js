@@ -18,7 +18,7 @@ const main = () => {
     runCommand('npm install --ignore-scripts', path.join(__dirname, 'frontend'));
 
     // Install backend dependencies
-    runCommand('python -m pip install -r backend/requirements.txt', path.join(__dirname, 'backend'));
+    runCommand('python -m pip install -r requirements.txt', path.join(__dirname, 'backend'));
 
     console.log('\n--- All dependencies installed successfully! ---\n');
   } catch (error) {

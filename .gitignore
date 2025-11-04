@@ -1,0 +1,9 @@
+# Logs
+log.txt
+*.log
+
+# Node dependencies
+/node_modules
+
+# Python virtual environment
+/backend/venv
