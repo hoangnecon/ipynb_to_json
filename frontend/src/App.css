@@ -1,0 +1,549 @@
+:root {
+    --background-color: #1a1a1a;
+    --surface-color: #2c2c2c;
+    --primary-color: #ffffff;
+    --primary-variant-color: #cccccc;
+    --secondary-color: #999999;
+    --text-color: #ffffff;
+    --text-secondary-color: #aaaaaa;
+    --border-color: #444444;
+    --error-color: #ff6b6b; /* Keeping a distinct error color for visibility */
+    --code-font: 'Fira Code', 'Courier New', Courier, monospace;
+}
+
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.App {
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 0;
+}
+
+.container-fluid {
+    overflow-y: scroll;
+    height: 100vh;
+}
+
+.scroll-page {
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    box-sizing: border-box;
+}
+
+.header {
+    text-align: center;
+    padding-bottom: 1rem;
+}
+
+.header h1 {
+    font-weight: 700;
+    margin: 0;
+    font-size: 2.5rem;
+}
+
+.header p {
+    font-size: 1.2rem;
+    color: var(--text-secondary-color);
+    margin-top: 0.5rem;
+}
+
+.upload-section {
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    width: 100%;
+    max-width: 800px;
+}
+
+.file-list-container {
+    max-height: 150px;
+    overflow-y: auto;
+    background-color: var(--background-color);
+    border: 1px solid var(--border-color);
+    padding: 1rem;
+    border-radius: 8px;
+}
+
+.file-checkbox-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.file-checkbox-list li {
+    border-bottom: 1px solid var(--border-color);
+}
+
+.file-checkbox-list li:last-child {
+    border-bottom: none; /* Remove border for the last item */
+}
+
+.file-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 1rem;
+    border-radius: 0; /* Remove border-radius from item, it's on container */
+    transition: background-color 0.2s ease-in-out;
+}
+
+.file-item:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.file-item label {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    cursor: pointer;
+    flex: 1;
+    /* Make label take full width to be clickable */
+}
+
+/* Custom Checkbox */
+.custom-checkbox {
+    position: relative;
+    width: 20px;
+    height: 20px;
+}
+
+.custom-checkbox input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 20px;
+    width: 20px;
+    background-color: var(--background-color);
+    border: 2px solid var(--border-color);
+    border-radius: 4px;
+    transition: all 0.2s ease-in-out;
+}
+
+.file-item:hover .checkmark {
+    border-color: var(--primary-variant-color);
+}
+
+.custom-checkbox input:checked~.checkmark {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+.custom-checkbox input:checked~.checkmark:after {
+    display: block;
+}
+
+.custom-checkbox .checkmark:after {
+    left: 6px;
+    top: 2px;
+    width: 5px;
+    height: 10px;
+    border: solid #000;
+    border-width: 0 3px 3px 0;
+    transform: rotate(45deg);
+}
+
+.file-name {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.delete-button {
+    background: none;
+    border: none;
+    color: var(--secondary-color);
+    font-size: 1.5rem;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 0 0.5rem;
+    line-height: 1;
+    opacity: 0.5;
+    transition: all 0.2s ease-in-out;
+}
+
+.delete-button:hover {
+    color: var(--error-color);
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.preview-section {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    min-height: 0; /* Fix for flex scrolling */
+}
+
+.preview-container {
+    display: flex; /* Changed from grid */
+    gap: 1.5rem;
+    width: 100%;
+    flex: 1; /* Allow container to grow */
+    min-height: 0; /* Fix for flex scrolling */
+}
+
+.preview-pane, .display-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.5rem;
+    flex: 1; /* Each pane takes 50% */
+    min-width: 0; /* Prevent flex blowout */
+    min-height: 0; /* Fix for flex scrolling */
+    box-sizing: border-box;
+}
+
+.pane-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+    flex-shrink: 0;
+}
+
+.pane-header h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.notebook-content, .json-pre {
+    flex: 1; /* Let it grow */
+    background-color: var(--background-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1.5rem;
+    overflow: auto; /* This will now work */
+    font-family: var(--code-font);
+    font-size: 0.95rem;
+    min-height: 0; /* Fix for flex scrolling */
+}
+
+.json-pre pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.cell {
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.code-cell .input-area {
+    padding: 1rem;
+    background-color: #222222;
+    display: flex;
+}
+
+.execution-count {
+    font-family: var(--code-font);
+    color: var(--text-secondary-color);
+    margin-right: 1rem;
+    user-select: none;
+}
+
+.code-cell pre, .markdown-cell pre {
+    margin: 0;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-family: var(--code-font);
+}
+
+.markdown-cell {
+    padding: 1rem;
+    background-color: var(--surface-color);
+}
+
+.output-area {
+    background-color: #252525;
+    border-top: 1px dashed var(--border-color);
+    padding: 1rem;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-family: var(--code-font);
+    font-size: 0.9rem;
+}
+
+.output-stream { color: var(--text-color); }
+.output-text { color: var(--secondary-color); }
+.output-error { color: var(--error-color); }
+
+.empty-message {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: var(--text-secondary-color);
+    height: 100%;
+    font-size: 1.1rem;
+}
+
+.browse-button, .copy-button {
+    background-color: var(--primary-color);
+    color: #000000;
+    border: none;
+    padding: 12px 24px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.convert-button {
+    background-color: var(--primary-color);
+    color: #000000;
+    border: none;
+    padding: 12px 24px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: center;
+    position: relative;
+}
+
+.spinner-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--primary-variant-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px; /* Match button border-radius */
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+}
+
+.convert-button.loading .spinner-overlay {
+    opacity: 1;
+}
+
+.spinner {
+    width: 24px;
+    height: 24px;
+    border: 3px solid rgba(0, 0, 0, 0.2);
+    border-top-color: #000;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.browse-button:hover, .convert-button:hover, .copy-button:hover {
+    background-color: var(--primary-variant-color);
+    color: #000000;
+}
+
+.convert-button:disabled, .copy-button:disabled {
+    background-color: #333;
+    color: #777;
+    cursor: not-allowed;
+}
+
+.button-group {
+    display: flex;
+    gap: 0.5rem;
+    position: relative; /* Needed for dropdown positioning */
+}
+
+.dropdown {
+    position: relative;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: calc(100% + 5px);
+    right: 0;
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0.5rem;
+    z-index: 10;
+    min-width: 150px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    display: none;
+}
+
+.dropdown-menu.open {
+    display: block;
+}
+
+.dropdown-item {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    padding: 0.75rem 1rem;
+    display: flex; /* Changed to flex */
+    align-items: center; /* Align icon and text */
+    gap: 0.75rem; /* Space between icon and text */
+    width: 100%;
+    text-align: left;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.dropdown-item:hover {
+    background-color: var(--background-color);
+}
+
+
+.tab-container {
+    display: flex;
+    border-bottom: 1px solid var(--border-color);
+    flex-wrap: wrap;
+    flex-shrink: 0;
+}
+
+.tab-item {
+    padding: 10px 20px;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    color: var(--text-secondary-color);
+    transition: all 0.2s ease-in-out;
+    white-space: nowrap;
+    font-weight: 600;
+}
+
+.tab-item:hover {
+    background-color: var(--surface-color);
+    color: var(--text-color);
+}
+
+.tab-item.active {
+    color: var(--primary-color);
+    border-bottom: 3px solid var(--primary-color);
+}
+
+.loader {
+    text-align: center;
+    padding: 1rem;
+    font-size: 1.2rem;
+}
+
+.error-message {
+    color: var(--error-color);
+    background-color: rgba(255, 107, 107, 0.1);
+    border: 1px solid var(--border-color);
+    padding: 1rem;
+    text-align: center;
+}
+
+/* Modal Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    animation: fadeIn 0.3s forwards;
+}
+
+.modal-content {
+    background-color: var(--surface-color);
+    padding: 2rem;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    transform: scale(0.9);
+    animation: zoomIn 0.3s forwards;
+}
+
+.modal-content p {
+    margin: 0 0 1.5rem 0;
+    font-size: 1.1rem;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.modal-button {
+    border: none;
+    padding: 10px 24px;
+    font-size: 1rem;
+    font-weight: 700;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.modal-button.cancel {
+    background-color: var(--surface-color);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+}
+
+.modal-button.cancel:hover {
+    background-color: var(--border-color);
+}
+
+.modal-button.confirm {
+    background-color: var(--error-color);
+    color: #000;
+}
+
+.modal-button.confirm:hover {
+    filter: brightness(0.9);
+}
+
+@keyframes fadeIn {
+    to { opacity: 1; }
+}
+
+@keyframes zoomIn {
+    to { transform: scale(1); }
+}
